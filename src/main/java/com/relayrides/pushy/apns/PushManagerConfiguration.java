@@ -30,6 +30,7 @@ package com.relayrides.pushy.apns;
 public class PushManagerConfiguration {
 
 	private int concurrentConnectionCount = 1;
+	private int reconnectionCount = 1;
 
 	private ApnsConnectionConfiguration connectionConfiguration = new ApnsConnectionConfiguration();
 	private FeedbackConnectionConfiguration feedbackConfiguration = new FeedbackConnectionConfiguration();
@@ -70,6 +71,27 @@ public class PushManagerConfiguration {
 	 */
 	public void setConcurrentConnectionCount(int concurrentConnectionCount) {
 		this.concurrentConnectionCount = concurrentConnectionCount;
+	}
+	
+
+	/**
+	 * Returns the number of reconnection to the APNs gateway by push managers created with this configuration.
+	 *
+	 * @return the number of reconnection to the APNs gateway by push managers created with this configuration
+	 */
+	public int getReconnectionCount() {
+		return reconnectionCount;
+	}
+
+	/**
+	 * Sets the number of reconnection to the APNs gateway by push managers created with this configuration. By
+	 * default, push managers will reconnect once to the APNs gateway.
+	 *
+	 * @param reconnectCountion the number of reconnection to the APNs gateway by push managers created
+	 * with this configuration
+	 */
+	public void setReconnectionCount(int reconnectionCount) {
+		this.reconnectionCount = reconnectionCount;
 	}
 
 	/**
@@ -139,18 +161,19 @@ public class PushManagerConfiguration {
 				* result
 				+ ((feedbackConfiguration == null) ? 0 : feedbackConfiguration
 						.hashCode());
+		result = prime * result + reconnectionCount;
 		return result;
 	}
 
 	@Override
-	public boolean equals(final Object obj) {
+	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
 		if (obj == null)
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		final PushManagerConfiguration other = (PushManagerConfiguration) obj;
+		PushManagerConfiguration other = (PushManagerConfiguration) obj;
 		if (concurrentConnectionCount != other.concurrentConnectionCount)
 			return false;
 		if (connectionConfiguration == null) {
@@ -164,6 +187,9 @@ public class PushManagerConfiguration {
 				return false;
 		} else if (!feedbackConfiguration.equals(other.feedbackConfiguration))
 			return false;
+		if (reconnectionCount != other.reconnectionCount)
+			return false;
 		return true;
 	}
+
 }

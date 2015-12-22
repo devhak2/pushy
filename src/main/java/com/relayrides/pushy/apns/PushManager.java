@@ -99,6 +99,7 @@ public class PushManager<T extends ApnsPushNotification> implements ApnsConnecti
 	private final String name;
 	private static final AtomicInteger pushManagerCounter = new AtomicInteger(0);
 	private AtomicInteger connectionCounter = new AtomicInteger(0);
+	private AtomicInteger reconnectionCounter = new AtomicInteger(0);
 	private int feedbackConnectionCounter = 0;
 
 	private final HashSet<ApnsConnection<T>> activeConnections = new HashSet<ApnsConnection<T>>();
@@ -768,7 +769,7 @@ public class PushManager<T extends ApnsPushNotification> implements ApnsConnecti
 		}
 
 		// As long as we're not shut down, try to open a replacement connection.
-		if (this.shouldReplaceClosedConnection()) {
+		if (this.shouldReplaceClosedConnection() && this.reconnectionCounter.getAndIncrement() < this.configuration.getReconnectionCount()) {
 			this.startNewConnection();
 		}
 	}
